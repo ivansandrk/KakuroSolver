@@ -244,7 +244,7 @@ void input_kakuro()
         p[k][i].set_white();
       }
       else { // error
-        fprintf(stderr, "input_kakuro(): color is b or w\n");
+        fprintf(stderr, "input_kakuro(%d, %d): color is b or w\n", k, i);
         exit(1);
       }
     }
@@ -252,8 +252,7 @@ void input_kakuro()
   }
   Uint32 k, i, right, down;
   while (scanf("%d%d%d%d", &k, &i, &right, &down) != EOF) {
-    --k; --i;
-    p[k][i].set_black_numbers(right, down);
+    p[--k][--i].set_black_numbers(right, down);
   }
 }
 
