@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string>
+#include <assert.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include "gui.h"
@@ -25,8 +26,8 @@ const uint32 boje[] = {0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFF
                        0x7F7F7F, 0x7F7FFF, 0xFF994C, 0xFFFFFF, 0x000000};
 
 const int TILE_SIZE = 90;
-const int SCREEN_WIDTH = TILE_SIZE * MAX_COLS;
-const int SCREEN_HEIGHT = TILE_SIZE * MAX_ROWS;
+int SCREEN_WIDTH;
+int SCREEN_HEIGHT;
 
 bool quit = false;
 bool solve_again = false;
@@ -47,6 +48,9 @@ int init()
     fprintf(stderr, "SDL_Init: %s\n", SDL_GetError());
     exit(1);
   }
+
+  SCREEN_HEIGHT = TILE_SIZE * g_cols;
+  SCREEN_WIDTH = TILE_SIZE * g_rows;
 
   g_window = SDL_CreateWindow("title",
                               SDL_WINDOWPOS_UNDEFINED,
@@ -189,10 +193,10 @@ int draw()
   set_color(WHITE);
   SDL_RenderClear(g_renderer);
   
-  for (int k = 0; k < MAX_ROWS; ++k) {
-    for (int i = 0; i < MAX_COLS; ++i) {
+  for (int k = 0; k < g_rows; ++k) {
+    for (int i = 0; i < g_cols; ++i) {
       set_color(p[k][i].is_black() ? BROWN : WHITE);
-      g_offset = {TILE_SIZE * i, TILE_SIZE * (MAX_ROWS-k-1)};
+      g_offset = {TILE_SIZE * i, TILE_SIZE * (g_rows-k-1)};
       draw_rect(0, 0, TILE_SIZE, TILE_SIZE);
 
       if (p[k][i].is_white()) {
@@ -220,10 +224,10 @@ int draw()
   }
   
   set_color(BLACK);
-  for (int k = 1; k < MAX_ROWS; ++k) {
+  for (int k = 1; k < g_rows; ++k) {
     draw_line(0, k * TILE_SIZE, SCREEN_WIDTH, k * TILE_SIZE);
   }
-  for (int k = 1; k < MAX_COLS; ++k) {
+  for (int k = 1; k < g_cols; ++k) {
     draw_line(k * TILE_SIZE, 0, k * TILE_SIZE, SCREEN_HEIGHT);
   }
 
@@ -234,8 +238,11 @@ int draw()
 
 void input_kakuro()
 {
-  for (Uint8 k = 0; k < MAX_ROWS; ++k) {
-    for (Uint8 i = 0; i < MAX_COLS; ++i) {
+  scanf("%d%d\n", &g_rows, &g_cols);
+  assert(g_rows <= MAX_ROWS);
+  assert(g_cols <= MAX_COLS);
+  for (Uint8 k = 0; k < g_rows; ++k) {
+    for (Uint8 i = 0; i < g_cols; ++i) {
       Uint8 a = getchar();
       if (a == 'b') { // black
         p[k][i].set_black();
@@ -244,7 +251,7 @@ void input_kakuro()
         p[k][i].set_white();
       }
       else { // error
-        fprintf(stderr, "input_kakuro(%d, %d): color is b or w\n", k, i);
+        fprintf(stderr, "input_kakuro(%d, %d): color is b or w [char = 0x%X]\n", k, i, a);
         exit(1);
       }
     }
@@ -258,14 +265,14 @@ void input_kakuro()
 
 void output_kakuro()
 {
-  for (int k = 0; k < MAX_ROWS; ++k) {
-    for (int i = 0; i < MAX_COLS; ++i) {
+  for (int k = 0; k < g_rows; ++k) {
+    for (int i = 0; i < g_cols; ++i) {
       putchar(p[k][i].is_black() ? 'b' : 'w');
     }
     putchar('\n');
   }
-  for (int k = 0; k < MAX_ROWS; ++k) {
-    for (int i = 0; i < MAX_COLS; ++i) {
+  for (int k = 0; k < g_rows; ++k) {
+    for (int i = 0; i < g_cols; ++i) {
       if (p[k][i].is_black() && (p[k][i].has_right_sum() || p[k][i].has_down_sum())) {
         printf("right: %d  down: %d\n", p[k][i].right_sum, p[k][i].down_sum);
       }

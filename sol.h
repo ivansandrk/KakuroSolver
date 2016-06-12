@@ -13,8 +13,10 @@ do { \
 typedef unsigned char Uint8;
 typedef unsigned short Uint16;
 typedef unsigned int Uint32;
-const Uint8 MAX_ROWS = 7; // 7, 7
-const Uint8 MAX_COLS = 7;
+const Uint8 MAX_ROWS = 10; // 7, 7
+const Uint8 MAX_COLS = 10;
+extern int g_rows;
+extern int g_cols;
 
 struct square {
  public:
