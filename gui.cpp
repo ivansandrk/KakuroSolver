@@ -204,6 +204,7 @@ int draw()
           if (p[k][i].get_bit(j+1)) {
             set_color(boje[j]);
             draw_rect((j%3)*TILE_SIZE/3, (2-j/3)*TILE_SIZE/3, TILE_SIZE/3, TILE_SIZE/3);
+            print(g_font_small, (j%3)*TILE_SIZE/3, (2-j/3)*TILE_SIZE/3, j+1);
           }
         }
       }
