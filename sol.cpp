@@ -52,7 +52,6 @@ void solve_kakuro()
               p[K][I].x &= f;
           }
         }
-//        return;
       }
       if (r.is_running() && r.is_white() && tab[p[k][i].x] == 1) {
               square &q = p[k][i];
@@ -77,7 +76,6 @@ void solve_kakuro()
               for (j = 1; k+j < g_rows && p[k+j][i].is_white(); ++j)
                 if (p[k+j][i].is_running())
                   p[k+j][i].x &= ~q.x;
-        
       }
     }
   }
