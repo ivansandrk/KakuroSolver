@@ -210,14 +210,12 @@ int draw()
       }
       if (p[k][i].is_black() && (p[k][i].has_right_sum() || p[k][i].has_down_sum())) {
         set_color(WHITE);
-        if (p[k][i].has_right_sum() && p[k][i].has_down_sum()) {
-          draw_line(0, TILE_SIZE, TILE_SIZE, 0);
-          print(g_font_small, 0, 0, p[k][i].down_sum);
+        draw_line(0, TILE_SIZE, TILE_SIZE, 0);
+        if (p[k][i].has_right_sum()) {
           print(g_font_small, TILE_SIZE/2, TILE_SIZE/2, p[k][i].right_sum);
         }
-        else
-        {
-          print(g_font_big, 0, 0, p[k][i].right_sum+p[k][i].down_sum);
+        if (p[k][i].has_down_sum()) {
+          print(g_font_small, 0, 0, p[k][i].down_sum);
         }
       }
       g_offset = {0, 0};
