@@ -136,7 +136,7 @@ int process()
   }
   if (mouse_x > 0 && mouse_y > 0) {
     int K = mouse_y / TILE_SIZE, I = mouse_x / TILE_SIZE;
-    if (p[K][I].is_white() && brojic > 0 && tab[p[K][I].x] > 1) {
+    if (p[K][I].is_white() && brojic > 0 && !p[K][I].is_single()) {
       mouse_x -= I * TILE_SIZE;
       mouse_y -= K * TILE_SIZE;
       Uint8 br = mouse_x/(TILE_SIZE/3) + (mouse_y/(TILE_SIZE/3))*3 + 1;
@@ -203,7 +203,7 @@ int draw()
         for (int j = 0; j < 9; ++j) {
           if (p[k][i].get_bit(j+1)) {
             set_color(boje[j]);
-            draw_rect((j%3)*TILE_SIZE/3, (2-j/3)*TILE_SIZE/3, TILE_SIZE/3, TILE_SIZE/3);
+            //draw_rect((j%3)*TILE_SIZE/3, (2-j/3)*TILE_SIZE/3, TILE_SIZE/3, TILE_SIZE/3);
             print(g_font_small, (j%3)*TILE_SIZE/3, (2-j/3)*TILE_SIZE/3, j+1);
           }
         }

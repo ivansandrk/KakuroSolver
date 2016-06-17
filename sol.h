@@ -1,6 +1,8 @@
 #ifndef _SOL_H
 #define _SOL_H
 
+#include <assert.h>
+
 #define lobit(x) ((x)&-(x))
 #define rm_lobit(x) ((x)&=~lobit(x))
 #define debug() \
@@ -13,10 +15,16 @@ do { \
 typedef unsigned char Uint8;
 typedef unsigned short Uint16;
 typedef unsigned int Uint32;
-const Uint8 MAX_ROWS = 10; // 7, 7
+const Uint8 MAX_ROWS = 10;
 const Uint8 MAX_COLS = 10;
 extern int g_rows;
 extern int g_cols;
+
+extern Uint8 tab[512];
+extern Uint8 suma[512];
+extern Uint16 ab[46][10][12];
+extern Uint8 abk[46][10];
+extern Uint32 counter;
 
 struct square {
  public:
@@ -94,13 +102,19 @@ struct square {
   Uint16 get_bit(Uint8 a) {
     return (x >> (a - 1)) & 1;
   }
+
+  // Return number of possible values for this field.
+  int possibilities() {
+    assert(is_white());
+    return tab[x];
+  }
+
+  // Return true if only one possible value for this field (ie. it's solved).
+  bool is_single() {
+    return possibilities() == 1;
+  }
 };
 
-extern Uint8 tab[512];
-extern Uint8 suma[512];
-extern Uint16 ab[46][10][12];
-extern Uint8 abk[46][10];
-extern Uint32 counter;
 extern square p[MAX_ROWS][MAX_COLS];
 
 void precalculate();

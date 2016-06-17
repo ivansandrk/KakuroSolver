@@ -53,7 +53,7 @@ void solve_kakuro()
           }
         }
       }
-      if (r.is_running() && r.is_white() && tab[p[k][i].x] == 1) {
+      if (r.is_running() && r.is_white() && r.is_single()) {
               square &q = p[k][i];
               q.set_done();
               Uint8 j;
