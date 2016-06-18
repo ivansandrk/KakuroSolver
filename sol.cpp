@@ -31,8 +31,7 @@ void solve_kakuro()
           }
           for (Uint8 l = 0; i+l+1 < g_cols && p[k][i+l+1].is_white(); ++l) {
             int K = k, I = i+l+1;
-            if (p[K][I].is_running())
-              p[K][I].x_ &= f;
+            p[K][I].remove_possibilities(~f);
           }
         }
         if (r.has_down_sum()) {
@@ -48,8 +47,7 @@ void solve_kakuro()
           }
           for (Uint8 l = 0; k+l+1 < g_rows && p[k+l+1][i].is_white(); ++l) {
             int K = k+l+1, I = i;
-            if (p[K][I].is_running())
-              p[K][I].x_ &= f;
+            p[K][I].remove_possibilities(~f);
           }
         }
       }
@@ -58,24 +56,20 @@ void solve_kakuro()
         q.set_done();
         Uint8 j;
         for (j = 1; i-j >= 0 && p[k][i-j].is_white(); ++j)
-          if (p[k][i-j].is_running())
-            p[k][i-j].x_ &= ~q.x_;
+          p[k][i-j].remove_possibilities(q.x_);
         p[k][i-j].right_sum_ -= suma[q.x_];
         p[k][i-j].set_running();
         
         for (j = 1; i+j < g_cols && p[k][i+j].is_white(); ++j)
-          if (p[k][i+j].is_running())
-            p[k][i+j].x_ &= ~q.x_;
+          p[k][i+j].remove_possibilities(q.x_);
         
         for (j = 1; k-j >= 0 && p[k-j][i].is_white(); ++j)
-          if (p[k-j][i].is_running())
-            p[k-j][i].x_ &= ~q.x_;
+          p[k-j][i].remove_possibilities(q.x_);
         p[k-j][i].down_sum_ -= suma[q.x_];
         p[k-j][i].set_running();
         
         for (j = 1; k+j < g_rows && p[k+j][i].is_white(); ++j)
-          if (p[k+j][i].is_running())
-            p[k+j][i].x_ &= ~q.x_;
+          p[k+j][i].remove_possibilities(q.x_);
       }
     }
   }
