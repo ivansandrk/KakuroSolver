@@ -53,6 +53,7 @@ struct square {
   int possibilities();
   // Return true if only one possible value for this field (ie. it's solved).
   bool is_single();
+  void remove_possibilities(Uint16 x);
 };
 
 extern square p[MAX_ROWS][MAX_COLS];

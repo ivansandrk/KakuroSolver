@@ -170,13 +170,28 @@ Uint16 square::get_bit(Uint8 a) {
   return (x_ >> (a - 1)) & 1;
 }
 
-// Return number of possible values for this field.
-int square::possibilities() {
-  assert(is_white());
-  return tab[x_];
+int possibilities(Uint16 x) {
+  return tab[x];
 }
 
-// Return true if only one possible value for this field (ie. it's solved).
+bool is_single(Uint16 x) {
+  int p = possibilities(x);
+  assert(p > 0);
+  return p == 1;
+}
+
+int square::possibilities() {
+  assert(is_white());
+  return ::possibilities(x_);
+}
+
 bool square::is_single() {
-  return possibilities() == 1;
+  assert(is_white());
+  return ::is_single(x_);
+}
+
+void square::remove_possibilities(Uint16 x) {
+  assert(is_white());
+  if (!is_running() || is_single()) return;
+  x_ &= ~x;
 }
