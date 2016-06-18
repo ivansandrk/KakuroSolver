@@ -63,7 +63,7 @@ void solve_kakuro()
         Uint8 j;
         for (j = 1; i-j >= 0 && p[k][i-j].is_white(); ++j)
           p[k][i-j].remove_possibilities(q.x_);
-        p[k][i-j].right_sum_ -= suma[q.x_];
+        p[k][i-j].right_sum_ -= q.value();
         p[k][i-j].set_running();
         
         for (j = 1; i+j < g_cols && p[k][i+j].is_white(); ++j)
@@ -71,7 +71,7 @@ void solve_kakuro()
         
         for (j = 1; k-j >= 0 && p[k-j][i].is_white(); ++j)
           p[k-j][i].remove_possibilities(q.x_);
-        p[k-j][i].down_sum_ -= suma[q.x_];
+        p[k-j][i].down_sum_ -= q.value();
         p[k-j][i].set_running();
         
         for (j = 1; k+j < g_rows && p[k+j][i].is_white(); ++j)
@@ -193,4 +193,9 @@ void square::remove_possibilities(Uint16 x) {
   assert(is_white());
   if (!is_running() || is_single()) return;
   x_ &= ~x;
+}
+
+Uint8 square::value() {
+  assert(is_white() && is_single());
+  return suma[x_];
 }

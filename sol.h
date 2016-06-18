@@ -54,6 +54,9 @@ struct square {
   // Return true if only one possible value for this field (ie. it's solved).
   bool is_single();
   void remove_possibilities(Uint16 x);
+  // Return the actual value of a white square (with a single possibility),
+  // eg. for x_ = 0x08 -> 4.
+  Uint8 value();
 };
 
 extern square p[MAX_ROWS][MAX_COLS];
