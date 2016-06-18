@@ -1,5 +1,6 @@
 #include "sol.h"
-#include <cstdio>
+#include <stdio.h>
+#include <vector>
 
 int g_rows;
 int g_cols;
@@ -8,8 +9,8 @@ square p[MAX_ROWS][MAX_COLS]; // polje koje zivot znaci
 
 static Uint8 tab[512]; // tab mi govori koliko 1(jedinica) ima broj, npr. 0x3f ima 6 jedinica
 static Uint8 suma[512]; // suma broja, npr. suma za 0x58 je 7+5+4 = 16
-static Uint16 ab[46][10][12]; // 16 u 4 polja: 2+3+4+7=16, 1+3+4+8=16, ...
-static Uint8 abk[46][10]; // koliko ima za svaki ovaj gore
+// 16 in 4 squares: 2+3+4+7=16, 1+3+4+8=16, ...
+static std::vector<Uint16> ab[46][10];
 
 void solve_kakuro()
 {
@@ -26,8 +27,8 @@ void solve_kakuro()
               ++j;
             }
           }
-          for (Uint8 l = 0; l < abk[r.right_sum_][j]; ++l) {
-            f |= ab[r.right_sum_][j][l];
+          for (auto possible_combination : ab[r.right_sum_][j]) {
+            f |= possible_combination;
           }
           for (Uint8 l = 0; i+l+1 < g_cols && p[k][i+l+1].is_white(); ++l) {
             int K = k, I = i+l+1;
@@ -42,8 +43,8 @@ void solve_kakuro()
               ++j;
             }
           }
-          for (Uint8 l = 0; l < abk[r.down_sum_][j]; ++l) {
-            f |= ab[r.down_sum_][j][l];
+          for (auto possible_combination : ab[r.down_sum_][j]) {
+            f |= possible_combination;
           }
           for (Uint8 l = 0; k+l+1 < g_rows && p[k+l+1][i].is_white(); ++l) {
             int K = k+l+1, I = i;
@@ -96,8 +97,7 @@ void precalculate()
   }
 
   for (Uint16 k = 0; k < 512; ++k) {
-    int i = abk[suma[k]][tab[k]]++;
-    ab[suma[k]][tab[k]][i] = k;
+    ab[suma[k]][tab[k]].push_back(k);
   }
 }
 
