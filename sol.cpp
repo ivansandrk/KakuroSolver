@@ -147,11 +147,11 @@ void square::set_done() {
 }
 
 bool square::has_down_sum() {
-  return down_sum_ > 0;
+  return orig_down_sum_ > 0;
 }
 
 bool square::has_right_sum() {
-  return right_sum_ > 0;
+  return orig_right_sum_ > 0;
 }
 
 void square::set_bit(Uint8 a) {
