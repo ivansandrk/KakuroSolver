@@ -5,10 +5,15 @@
 int g_rows;
 int g_cols;
 
-square p[MAX_ROWS][MAX_COLS]; // polje koje zivot znaci
+square p[MAX_ROWS][MAX_COLS];
 
-static Uint8 tab[512]; // tab mi govori koliko 1(jedinica) ima broj, npr. 0x3f ima 6 jedinica
-static Uint8 suma[512]; // suma broja, npr. suma za 0x58 je 7+5+4 = 16
+// how many 1's a number has, eg. 0x3F has 6 1's
+static Uint8 tab[512];
+
+// sum of 1's positions for a given number,
+// eg. for 0x58 (0101 1000) its 7+5+4 = 16
+static Uint8 suma[512];
+
 // 16 in 4 squares: 2+3+4+7=16, 1+3+4+8=16, ...
 static std::vector<Uint16> sum_in_n[46][10];
 
