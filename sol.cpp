@@ -107,8 +107,9 @@ void precalculate()
   }
 }
 
-square::square() : right_sum_(0), down_sum_(0), x_(0),
-                   white_(false), running_(true) {}
+square::square() : orig_right_sum_(0), right_sum_(0),
+                   orig_down_sum_(0), down_sum_(0),
+                   x_(0), white_(false), running_(true) {}
 
 bool square::is_white() {
   return white_;
@@ -125,8 +126,8 @@ bool square::is_black() {
 
 void square::set_black(Uint8 a, Uint8 b) {
   white_ = false;
-  right_sum_ = a;
-  down_sum_ = b;
+  orig_right_sum_ = right_sum_ = a;
+  orig_down_sum_ = down_sum_ = b;
 }
 
 bool square::is_running() {

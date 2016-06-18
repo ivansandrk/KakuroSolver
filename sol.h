@@ -22,7 +22,9 @@ extern int g_cols;
 
 struct square {
  public:
+  Uint8 orig_right_sum_;
   Uint8 right_sum_;
+  Uint8 orig_down_sum_;
   Uint8 down_sum_;
   Uint16 x_;
 
