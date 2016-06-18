@@ -20,99 +20,37 @@ const Uint8 MAX_COLS = 10;
 extern int g_rows;
 extern int g_cols;
 
-extern Uint8 tab[512];
-extern Uint8 suma[512];
-extern Uint16 ab[46][10][12];
-extern Uint8 abk[46][10];
-extern Uint32 counter;
-
 struct square {
  public:
-  Uint8 right_sum;
-  Uint8 down_sum;
-  Uint16 x;
+  Uint8 right_sum_;
+  Uint8 down_sum_;
+  Uint16 x_;
 
  private:
   bool white_;
   bool running_;
 
  public:
-  square() : right_sum(0), down_sum(0), x(0), white_(false), running_(true) {}
+  square();
 
-  bool is_white() {
-    return white_;
-  }
-
-  void set_white() {
-    white_ = true;
-    x = 0x1FF;
-  }
-
-  bool is_black() {
-    return !is_white();
-  }
-
-  void set_black() {
-    white_ = false;
-    right_sum = down_sum = 0;
-  }
-
-  void set_black_numbers(Uint8 a, Uint8 b) {
-    white_ = false;
-    right_sum = a;
-    down_sum = b;
-  }
-
-  bool is_running() {
-    return running_;
-  }
-
-  void set_running() {
-    running_ = true;
-  }
-
-  bool is_done() {
-    return !is_running();
-  }
-
-  void set_done() {
-    running_ = false;
-  }
-
-  bool has_down_sum() {
-    return down_sum > 0;
-  }
-
-  bool has_right_sum() {
-    return right_sum > 0;
-  }
-
-  void set_bit(Uint8 a) {
-    x |= bit(a);
-  }
-
-  void remove_bit(Uint8 a) {
-    x &= ~bit(a);
-  }
-
-  void flip_bit(Uint8 a) {
-    x ^= bit(a);
-  }
-
-  Uint16 get_bit(Uint8 a) {
-    return (x >> (a - 1)) & 1;
-  }
-
+  bool is_white();
+  void set_white();
+  bool is_black();
+  void set_black(Uint8 a = 0, Uint8 b = 0);
+  bool is_running();
+  void set_running();
+  bool is_done();
+  void set_done();
+  bool has_down_sum();
+  bool has_right_sum();
+  void set_bit(Uint8 a);
+  void remove_bit(Uint8 a);
+  void flip_bit(Uint8 a);
+  Uint16 get_bit(Uint8 a);
   // Return number of possible values for this field.
-  int possibilities() {
-    assert(is_white());
-    return tab[x];
-  }
-
+  int possibilities();
   // Return true if only one possible value for this field (ie. it's solved).
-  bool is_single() {
-    return possibilities() == 1;
-  }
+  bool is_single();
 };
 
 extern square p[MAX_ROWS][MAX_COLS];

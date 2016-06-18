@@ -4,12 +4,12 @@
 int g_rows;
 int g_cols;
 
-Uint8 tab[512]; // tab mi govori koliko 1(jedinica) ima broj, npr. 0x3f ima 6 jedinica
-Uint8 suma[512]; // suma broja, npr. suma za 0x58 je 7+5+4 = 16
-Uint16 ab[46][10][12]; // 16 u 4 polja: 2+3+4+7=16, 1+3+4+8=16, ...
-Uint8 abk[46][10]; // koliko ima za svaki ovaj gore
-Uint32 counter = 0; // debuggiranje
 square p[MAX_ROWS][MAX_COLS]; // polje koje zivot znaci
+
+static Uint8 tab[512]; // tab mi govori koliko 1(jedinica) ima broj, npr. 0x3f ima 6 jedinica
+static Uint8 suma[512]; // suma broja, npr. suma za 0x58 je 7+5+4 = 16
+static Uint16 ab[46][10][12]; // 16 u 4 polja: 2+3+4+7=16, 1+3+4+8=16, ...
+static Uint8 abk[46][10]; // koliko ima za svaki ovaj gore
 
 void solve_kakuro()
 {
@@ -26,13 +26,13 @@ void solve_kakuro()
               ++j;
             }
           }
-          for (Uint8 l = 0; l < abk[r.right_sum][j]; ++l) {
-            f |= ab[r.right_sum][j][l];
+          for (Uint8 l = 0; l < abk[r.right_sum_][j]; ++l) {
+            f |= ab[r.right_sum_][j][l];
           }
           for (Uint8 l = 0; i+l+1 < g_cols && p[k][i+l+1].is_white(); ++l) {
             int K = k, I = i+l+1;
             if (p[K][I].is_running())
-              p[K][I].x &= f;
+              p[K][I].x_ &= f;
           }
         }
         if (r.has_down_sum()) {
@@ -43,39 +43,39 @@ void solve_kakuro()
               ++j;
             }
           }
-          for (Uint8 l = 0; l < abk[r.down_sum][j]; ++l) {
-            f |= ab[r.down_sum][j][l];
+          for (Uint8 l = 0; l < abk[r.down_sum_][j]; ++l) {
+            f |= ab[r.down_sum_][j][l];
           }
           for (Uint8 l = 0; k+l+1 < g_rows && p[k+l+1][i].is_white(); ++l) {
             int K = k+l+1, I = i;
             if (p[K][I].is_running())
-              p[K][I].x &= f;
+              p[K][I].x_ &= f;
           }
         }
       }
       if (r.is_running() && r.is_white() && r.is_single()) {
-              square &q = p[k][i];
-              q.set_done();
-              Uint8 j;
-              for (j = 1; i-j >= 0 && p[k][i-j].is_white(); ++j)
-                if (p[k][i-j].is_running())
-                  p[k][i-j].x &= ~q.x;
-              p[k][i-j].right_sum -= suma[q.x];
-              p[k][i-j].set_running();
-              
-              for (j = 1; i+j < g_cols && p[k][i+j].is_white(); ++j)
-                if (p[k][i+j].is_running())
-                  p[k][i+j].x &= ~q.x;
-              
-              for (j = 1; k-j >= 0 && p[k-j][i].is_white(); ++j)
-                if (p[k-j][i].is_running())
-                  p[k-j][i].x &= ~q.x;
-              p[k-j][i].down_sum -= suma[q.x];
-              p[k-j][i].set_running();
-              
-              for (j = 1; k+j < g_rows && p[k+j][i].is_white(); ++j)
-                if (p[k+j][i].is_running())
-                  p[k+j][i].x &= ~q.x;
+        square &q = p[k][i];
+        q.set_done();
+        Uint8 j;
+        for (j = 1; i-j >= 0 && p[k][i-j].is_white(); ++j)
+          if (p[k][i-j].is_running())
+            p[k][i-j].x_ &= ~q.x_;
+        p[k][i-j].right_sum_ -= suma[q.x_];
+        p[k][i-j].set_running();
+        
+        for (j = 1; i+j < g_cols && p[k][i+j].is_white(); ++j)
+          if (p[k][i+j].is_running())
+            p[k][i+j].x_ &= ~q.x_;
+        
+        for (j = 1; k-j >= 0 && p[k-j][i].is_white(); ++j)
+          if (p[k-j][i].is_running())
+            p[k-j][i].x_ &= ~q.x_;
+        p[k-j][i].down_sum_ -= suma[q.x_];
+        p[k-j][i].set_running();
+        
+        for (j = 1; k+j < g_rows && p[k+j][i].is_white(); ++j)
+          if (p[k+j][i].is_running())
+            p[k+j][i].x_ &= ~q.x_;
       }
     }
   }
@@ -105,4 +105,77 @@ void precalculate()
     int i = abk[suma[k]][tab[k]]++;
     ab[suma[k]][tab[k]][i] = k;
   }
+}
+
+square::square() : right_sum_(0), down_sum_(0), x_(0),
+                   white_(false), running_(true) {}
+
+bool square::is_white() {
+  return white_;
+}
+
+void square::set_white() {
+  white_ = true;
+  x_ = 0x1FF;
+}
+
+bool square::is_black() {
+  return !is_white();
+}
+
+void square::set_black(Uint8 a, Uint8 b) {
+  white_ = false;
+  right_sum_ = a;
+  down_sum_ = b;
+}
+
+bool square::is_running() {
+  return running_;
+}
+
+void square::set_running() {
+  running_ = true;
+}
+
+bool square::is_done() {
+  return !is_running();
+}
+
+void square::set_done() {
+  running_ = false;
+}
+
+bool square::has_down_sum() {
+  return down_sum_ > 0;
+}
+
+bool square::has_right_sum() {
+  return right_sum_ > 0;
+}
+
+void square::set_bit(Uint8 a) {
+  x_ |= bit(a);
+}
+
+void square::remove_bit(Uint8 a) {
+  x_ &= ~bit(a);
+}
+
+void square::flip_bit(Uint8 a) {
+  x_ ^= bit(a);
+}
+
+Uint16 square::get_bit(Uint8 a) {
+  return (x_ >> (a - 1)) & 1;
+}
+
+// Return number of possible values for this field.
+int square::possibilities() {
+  assert(is_white());
+  return tab[x_];
+}
+
+// Return true if only one possible value for this field (ie. it's solved).
+bool square::is_single() {
+  return possibilities() == 1;
 }

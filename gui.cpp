@@ -212,10 +212,10 @@ int draw()
         set_color(WHITE);
         draw_line(0, TILE_SIZE, TILE_SIZE, 0);
         if (p[k][i].has_right_sum()) {
-          print(g_font_small, TILE_SIZE/2, TILE_SIZE/2, p[k][i].right_sum);
+          print(g_font_small, TILE_SIZE/2, TILE_SIZE/2, p[k][i].right_sum_);
         }
         if (p[k][i].has_down_sum()) {
-          print(g_font_small, 0, 0, p[k][i].down_sum);
+          print(g_font_small, 0, 0, p[k][i].down_sum_);
         }
       }
       g_offset = {0, 0};
@@ -258,7 +258,7 @@ void input_kakuro()
   }
   Uint32 k, i, right, down;
   while (scanf("%d%d%d%d", &k, &i, &right, &down) != EOF) {
-    p[--k][--i].set_black_numbers(right, down);
+    p[--k][--i].set_black(right, down);
   }
 }
 
@@ -273,7 +273,7 @@ void output_kakuro()
   for (int k = 0; k < g_rows; ++k) {
     for (int i = 0; i < g_cols; ++i) {
       if (p[k][i].is_black() && (p[k][i].has_right_sum() || p[k][i].has_down_sum())) {
-        printf("right: %d  down: %d\n", p[k][i].right_sum, p[k][i].down_sum);
+        printf("right: %d  down: %d\n", p[k][i].right_sum_, p[k][i].down_sum_);
       }
     }
   }
