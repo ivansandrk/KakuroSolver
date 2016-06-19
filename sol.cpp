@@ -1,6 +1,7 @@
 #include "sol.h"
 #include <stdio.h>
 #include <vector>
+#include <assert.h>
 
 int g_rows;
 int g_cols;
@@ -22,7 +23,9 @@ void solve_kakuro()
   for (int k = 0; k < g_rows; ++k) {
     for (int i = 0; i < g_cols; ++i) {
       square &r = p[k][i];
-      if (r.is_running() && r.is_black()) {
+      if (!r.is_running() || (r.is_white() && !r.is_single())) continue;
+
+      if (r.is_black()) {
         r.set_done();
         if (r.has_right_sum()) {
           Uint16 f = 0;
@@ -57,7 +60,8 @@ void solve_kakuro()
           }
         }
       }
-      if (r.is_running() && r.is_white() && r.is_single()) {
+
+      if (r.is_white()) {
         square &q = p[k][i];
         q.set_done();
         Uint8 j;

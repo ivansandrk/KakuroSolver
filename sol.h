@@ -1,8 +1,6 @@
 #ifndef _SOL_H
 #define _SOL_H
 
-#include <assert.h>
-
 #define lobit(x) ((x)&-(x))
 #define rm_lobit(x) ((x)&=~lobit(x))
 #define debug() \
