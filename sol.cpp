@@ -15,7 +15,8 @@ static Uint8 tab[512];
 // eg. for 0x58 (0101 1000) its 7+5+4 = 16
 static Uint8 suma[512];
 
-// 16 in 4 squares: 2+3+4+7=16, 1+3+4+8=16, ...
+// 16 in 4 squares, sum_in_n[16][4] = {1001110, 10001101, ... }
+// -> 2+3+4+7=16, 1+3+4+8=16, ...
 static std::vector<Uint16> sum_in_n[46][10];
 
 void solve_kakuro()
@@ -24,9 +25,9 @@ void solve_kakuro()
     for (int i = 0; i < g_cols; ++i) {
       square &r = p[k][i];
       if (!r.is_running() || (r.is_white() && !r.is_single())) continue;
+      r.set_done();
 
       if (r.is_black()) {
-        r.set_done();
         if (r.has_right_sum()) {
           Uint16 f = 0;
           Uint8 j = 0;
@@ -62,24 +63,22 @@ void solve_kakuro()
       }
 
       if (r.is_white()) {
-        square &q = p[k][i];
-        q.set_done();
         Uint8 j;
         for (j = 1; i-j >= 0 && p[k][i-j].is_white(); ++j)
-          p[k][i-j].remove_possibilities(q.x_);
-        p[k][i-j].right_sum_ -= q.value();
+          p[k][i-j].remove_possibilities(r.x_);
+        p[k][i-j].right_sum_ -= r.value();
         p[k][i-j].set_running();
         
         for (j = 1; i+j < g_cols && p[k][i+j].is_white(); ++j)
-          p[k][i+j].remove_possibilities(q.x_);
+          p[k][i+j].remove_possibilities(r.x_);
         
         for (j = 1; k-j >= 0 && p[k-j][i].is_white(); ++j)
-          p[k-j][i].remove_possibilities(q.x_);
-        p[k-j][i].down_sum_ -= q.value();
+          p[k-j][i].remove_possibilities(r.x_);
+        p[k-j][i].down_sum_ -= r.value();
         p[k-j][i].set_running();
         
         for (j = 1; k+j < g_rows && p[k+j][i].is_white(); ++j)
-          p[k+j][i].remove_possibilities(q.x_);
+          p[k+j][i].remove_possibilities(r.x_);
       }
     }
   }
