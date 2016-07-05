@@ -10,22 +10,25 @@ typedef Uint32 uint32;
 typedef Uint16 uint16;
 typedef Uint8  uint8;
 
-#define RED         0xFF0000
-#define GREEN       0x00FF00
-#define BLUE        0x0000FF
-#define YELLOW      0xFFFF00
-#define MAGENTA     0xFF00FF
-#define CYAN        0x00FFFF
-#define WHITE       0xFFFFFF
-#define BLACK       0x000000
-#define GRAY        0x7F7F7F
-#define LIGHT_BLUE  0x7F7FFF
-#define BROWN       0xFF994D
+const Uint32 RED        = 0xFF0000;
+const Uint32 GREEN      = 0x00FF00;
+const Uint32 BLUE       = 0x0000FF;
+const Uint32 YELLOW     = 0xFFFF00;
+const Uint32 MAGENTA    = 0xFF00FF;
+const Uint32 CYAN       = 0x00FFFF;
+const Uint32 WHITE      = 0xFFFFFF;
+const Uint32 BLACK      = 0x000000;
+const Uint32 GRAY       = 0x7F7F7F;
+const Uint32 LIGHT_BLUE = 0x7F7FFF;
+const Uint32 BROWN      = 0xFF994D;
+const Uint32 LIGHT_PINK = 0xFFAFAF;
 
-const uint32 boje[] = {0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF,
-                       0x7F7F7F, 0x7F7FFF, 0xFF994C, 0xFFFFFF, 0x000000};
+const uint32 boje[] = {RED, GREEN, BLUE, YELLOW, MAGENTA, CYAN, WHITE, BLACK,
+                       GRAY, LIGHT_BLUE, BROWN, LIGHT_PINK};
 
-const int TILE_SIZE = 90;
+const int TILE_SIZE = 60;
+const int FONT_SMALL_SIZE = 20;
+const int FONT_BIG_SIZE = 30;
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
 
@@ -49,8 +52,8 @@ int init()
     exit(1);
   }
 
-  SCREEN_HEIGHT = TILE_SIZE * g_cols;
-  SCREEN_WIDTH = TILE_SIZE * g_rows;
+  SCREEN_WIDTH = TILE_SIZE * g_cols;
+  SCREEN_HEIGHT = TILE_SIZE * g_rows;
 
   g_window = SDL_CreateWindow("title",
                               SDL_WINDOWPOS_UNDEFINED,
@@ -75,8 +78,8 @@ int init()
     exit(1);
   }
   // "/usr/share/fonts/truetype/msttcorefonts/arial.ttf"
-  g_font_small = TTF_OpenFont("lazy.ttf", 30);
-  g_font_big   = TTF_OpenFont("lazy.ttf", 50);
+  g_font_small = TTF_OpenFont("lazy.ttf", FONT_SMALL_SIZE);
+  g_font_big   = TTF_OpenFont("lazy.ttf", FONT_BIG_SIZE);
   if (!g_font_small || !g_font_big) {
     fprintf(stderr, "TTF_OpenFont: %s\n", TTF_GetError());
     exit(1);
@@ -195,27 +198,33 @@ int draw()
   
   for (int k = 0; k < g_rows; ++k) {
     for (int i = 0; i < g_cols; ++i) {
-      set_color(p[k][i].is_black() ? BROWN : WHITE);
+      const square& q = p[k][i];
+      set_color(q.is_black() ? BROWN : WHITE);
       g_offset = {TILE_SIZE * i, TILE_SIZE * (g_rows-k-1)};
       draw_rect(0, 0, TILE_SIZE, TILE_SIZE);
 
-      if (p[k][i].is_white()) {
+      if (q.is_white() && q.is_single()) {
+        set_color(LIGHT_PINK);
+        draw_rect(0, 0, TILE_SIZE, TILE_SIZE);
+        print(g_font_big, TILE_SIZE * 0.35, TILE_SIZE * 0.25, q.value());
+      }
+      if (q.is_white() && !q.is_single()) {
         for (int j = 0; j < 9; ++j) {
-          if (p[k][i].get_bit(j+1)) {
+          if (q.get_bit(j+1)) {
             set_color(boje[j]);
             //draw_rect((j%3)*TILE_SIZE/3, (2-j/3)*TILE_SIZE/3, TILE_SIZE/3, TILE_SIZE/3);
             print(g_font_small, (j%3)*TILE_SIZE/3, (2-j/3)*TILE_SIZE/3, j+1);
           }
         }
       }
-      if (p[k][i].is_black() && (p[k][i].has_right_sum() || p[k][i].has_down_sum())) {
+      if (q.is_black() && (q.has_right_sum() || q.has_down_sum())) {
         set_color(WHITE);
         draw_line(0, TILE_SIZE, TILE_SIZE, 0);
-        if (p[k][i].has_right_sum()) {
-          print(g_font_small, TILE_SIZE/2, TILE_SIZE/2, p[k][i].orig_right_sum_);
+        if (q.has_right_sum()) {
+          print(g_font_small, TILE_SIZE/2, TILE_SIZE/2, q.orig_right_sum_);
         }
-        if (p[k][i].has_down_sum()) {
-          print(g_font_small, 0, 0, p[k][i].orig_down_sum_);
+        if (q.has_down_sum()) {
+          print(g_font_small, 0, 0, q.orig_down_sum_);
         }
       }
       g_offset = {0, 0};

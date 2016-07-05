@@ -113,7 +113,7 @@ square::square() : orig_right_sum_(0), right_sum_(0),
                    orig_down_sum_(0), down_sum_(0),
                    x_(0), white_(false), running_(true) {}
 
-bool square::is_white() {
+bool square::is_white() const {
   return white_;
 }
 
@@ -122,7 +122,7 @@ void square::set_white() {
   x_ = 0x1FF;
 }
 
-bool square::is_black() {
+bool square::is_black() const {
   return !is_white();
 }
 
@@ -132,7 +132,7 @@ void square::set_black(Uint8 a, Uint8 b) {
   orig_down_sum_ = down_sum_ = b;
 }
 
-bool square::is_running() {
+bool square::is_running() const {
   return running_;
 }
 
@@ -140,7 +140,7 @@ void square::set_running() {
   running_ = true;
 }
 
-bool square::is_done() {
+bool square::is_done() const {
   return !is_running();
 }
 
@@ -148,11 +148,11 @@ void square::set_done() {
   running_ = false;
 }
 
-bool square::has_down_sum() {
+bool square::has_down_sum() const {
   return orig_down_sum_ > 0;
 }
 
-bool square::has_right_sum() {
+bool square::has_right_sum() const {
   return orig_right_sum_ > 0;
 }
 
@@ -168,7 +168,7 @@ void square::flip_bit(Uint8 a) {
   x_ ^= bit(a);
 }
 
-Uint16 square::get_bit(Uint8 a) {
+Uint16 square::get_bit(Uint8 a) const {
   return (x_ >> (a - 1)) & 1;
 }
 
@@ -182,12 +182,12 @@ bool is_single(Uint16 x) {
   return p == 1;
 }
 
-int square::possibilities() {
+int square::possibilities() const {
   assert(is_white());
   return ::possibilities(x_);
 }
 
-bool square::is_single() {
+bool square::is_single() const {
   assert(is_white());
   return ::is_single(x_);
 }
@@ -198,7 +198,7 @@ void square::remove_possibilities(Uint16 x) {
   x_ &= ~x;
 }
 
-Uint8 square::value() {
+Uint8 square::value() const {
   assert(is_white() && is_single());
   return suma[x_];
 }

@@ -13,8 +13,8 @@ do { \
 typedef unsigned char Uint8;
 typedef unsigned short Uint16;
 typedef unsigned int Uint32;
-const Uint8 MAX_ROWS = 10;
-const Uint8 MAX_COLS = 10;
+const Uint8 MAX_ROWS = 15;
+const Uint8 MAX_COLS = 15;
 extern int g_rows;
 extern int g_cols;
 
@@ -33,28 +33,28 @@ struct square {
  public:
   square();
 
-  bool is_white();
+  bool is_white() const;
   void set_white();
-  bool is_black();
+  bool is_black() const;
   void set_black(Uint8 a = 0, Uint8 b = 0);
-  bool is_running();
+  bool is_running() const;
   void set_running();
-  bool is_done();
+  bool is_done() const;
   void set_done();
-  bool has_down_sum();
-  bool has_right_sum();
+  bool has_down_sum() const;
+  bool has_right_sum() const;
   void set_bit(Uint8 a);
   void remove_bit(Uint8 a);
   void flip_bit(Uint8 a);
-  Uint16 get_bit(Uint8 a);
+  Uint16 get_bit(Uint8 a) const;
   // Return number of possible values for this field.
-  int possibilities();
+  int possibilities() const;
   // Return true if only one possible value for this field (ie. it's solved).
-  bool is_single();
+  bool is_single() const;
   void remove_possibilities(Uint16 x);
   // Return the actual value of a white square (with a single possibility),
   // eg. for x_ = 0x08 -> 4.
-  Uint8 value();
+  Uint8 value() const;
 };
 
 extern square p[MAX_ROWS][MAX_COLS];
