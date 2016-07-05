@@ -10,7 +10,7 @@ except ImportError:
     from bs4 import BeautifulSoup
 
 soup = BeautifulSoup(sys.stdin)
-tbody = soup.tbody
+tbody = soup.tbody or soup
 NUM_ROWS = len(tbody.findChildren('tr', recursive=False))
 NUM_COLS = len(tbody.findChild('tr', recursive=False).findChildren('td', recursive=False))
 table = []
